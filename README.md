@@ -7,12 +7,12 @@
 [![GitHub license](https://img.shields.io/github/license/max96git/SocialRainbow?logo=apache)](LICENSE.txt)
 
 **SocialRainbow** is a module for Roblox based on WinnersTakeAll's Shime module, but it's different, the shime is a... **Rainbow!**
-# 📄 Documentation
+# Documentation
 # Summary
 
 ### Constructors
-new(`item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject), `it:` [`string`](https://create.roblox.com/docs/scripting/luau/strings), `cooldown:` [`number`](https://create.roblox.com/docs/scripting/luau/numbers)?)|[]()
--|-
+| new(`item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject), `it:` [`string`](https://create.roblox.com/docs/scripting/luau/strings), `cooldown:` [`number`](https://create.roblox.com/docs/scripting/luau/numbers)?) |
+| :--- |
 Returns a [`table`](https://create.roblox.com/docs/reference/engine/libraries/table) containing `Rainbow`'s metatable
 
 ### Properties
@@ -29,30 +29,30 @@ finished | This property checks if the rainbow finished
 
 ### Methods
 
-`Play(): void` | []()
--|-
+| `Play(): void` |
+| :--- |
 The `Play()` function starts the rainbow at the `item` Parameter
 
-`Pause(seconds:` [`number`](https://create.roblox.com/docs/scripting/luau/numbers) `): void` | []()
--|-
+| `Pause(seconds:` [`number`](https://create.roblox.com/docs/scripting/luau/numbers) `): void` |
+| :--- |
 The `Pause()` function pauses the rainbow at the `item` Parameter until the `seconds` parameter has passed
 
-`Stop(): void` | []()
--|-
+| `Stop(): void` |
+| :--- |
 The `Stop()` function Stops the rainbow at the `item` Parameter
 
 ### Events
 
-`Played(item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject)`):` [`RBXScriptSignal`](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal) | []()
--|-
+| `Played(item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject)`):` [`RBXScriptSignal`](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal) |
+| :--- |
 This event will fire when the rainbow starts to play
 
-`Paused(item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject)`):` [`RBXScriptSignal`](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal) | []()
--|-
+| `Paused(item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject)`):` [`RBXScriptSignal`](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal) |
+| :--- |
 This event will fire when the rainbow pauses
 
-`Stopped(item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject)`):` [`RBXScriptSignal`](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal) | []()
--|-
+| `Stopped(item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject)`):` [`RBXScriptSignal`](https://create.roblox.com/docs/reference/engine/datatypes/RBXScriptSignal) |
+| :--- |
 This event will fire when the rainbow stops
 
 # Constructors
@@ -77,7 +77,7 @@ This property will return either `"Border"`, `"Background"`, or `"Text"`, depend
 
 **Code Samples**
 
-The Below example would say: `"Background is correct"`
+The Below example would say: `"x is correct"`
 
 ```lua
 local rainbow = require(game:GetService("ReplicatedStorage"):WaitForChild("SocialRainbow"))
@@ -92,7 +92,7 @@ The property will return the `item` argument
 
 **Code Samples**
 
-The example below would print `"Frame is a good choice"`
+The example below would print `"x is a good choice"`
 
 ```lua
 local rainbow = require(game:GetService("ReplicatedStorage"):WaitForChild("SocialRainbow"))
@@ -126,32 +126,42 @@ end)
 coroutine.resume(coro)
 ```
 
-### `name`
-This property is the name of the `RenderStep` binding
+### `func`
+This property is the function of the `Rainbow`
 
 **Code Sample**
 
-This example would print `"RainbowEffectFrame is currently set"`
+This example start the function of the rainbow
 
 ```lua
 local SocialRainbow = require(game:GetService("ReplicatedStorage"):WaitForChild("SocialRainbow"))
 
 local r = SocialRainbow.new(script.Parent, "Background")
 
-print(r.name, "is currently set")
+if r.func ~= nil then
+   r.func()
+end
 ```
 
-### `isPlaying`
+### `playbackState`
 
-This property checks if the rainbow is playing, However, If `RunService:UnbindFromRenderStep(r.name)`, the `isPlaying` will still be true, the workaround is done using `r:Stop()` or `r:Pause(5)` so `isPlaying` will be false and unbinds from `RenderStep`
+This is the `Rainbow`'s `PlaybackState
 
-### `isPaused`
+**Code Samples**
 
-This property checks if the rainbow is paused, However, If `RunService:UnbindFromRenderStep(r.name)`, the `isPaused` will still be true, the workaround is done using `r:Pause(5)` so `isPaused` will be false and unbinds from `RenderStep`
+This is to print `"x is incorrect"`
 
-### isFinished
+```lua
+local SocialRainbow = require(game:GetService("ReplicatedStorage"):WaitForChild("SocialRainbow"))
 
-This property checks if the rainbow is finished, However, If `RunService:UnbindFromRenderStep(r.name)` , the `isFinished` will still be true, the workaround is done using `r:Stop()` so `isFinished` will be false and unbinds from `RenderStep`
+local r = SocialRainbow.new(script.Parent, "Background")
+
+r.Played:Connect(function(item, playbackState)
+   if r.playbackState ~= playbackState then
+      print(r.playbackState, "is incorrect")
+   end
+end)
+```
 
 # Methods
 
@@ -192,9 +202,9 @@ Pauses the `Rainbow` until a certain amount of seconds have passed
 
 **Parameters**
 
-[]()|[]()
--|-
-`seconds:` [`number`](https://create.roblox.com/docs/scripting/luau/numbers) | the seconds to pass after the `Rainbow` is paused, The minimum is `0.1`, and the maximum is `100,000`, and automatically clamps the value
+| `seconds:` [`number`](https://create.roblox.com/docs/scripting/luau/numbers) | 
+| :--- |
+the seconds to pass after the `Rainbow` is paused, The minimum is `0.1`, and the maximum is `100,000`, and automatically clamps the value
 
 **Returns**
 
@@ -261,13 +271,15 @@ end)
 This event will fire when the `Rainbow` starts to play
 
 **Parameters**
-[]()|[]()
+
+Parameter | Description
 -|-
-`item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) | The [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) being used in the `Rainbow`
+`item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) | The [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) being used in the Rainbow
+`playbackState:`  [`PlaybackState`](https://create.roblox.com/docs/reference/engine/enums/PlaybackState) | The [`PlaybackState`](https://create.roblox.com/docs/reference/engine/enums/PlaybackState) of the rainbow
 
 **Code Sample**
 
-This Code Example would print out `"Frame has started"`
+This Code Example would print out `"x has started"`
 
 ```lua
 local SocialRainbow = require(game.ReplicatedStorage.SocialRainbow)
@@ -285,14 +297,15 @@ This Event would fire when the `Rainbow` was paused for a certain amount of time
 
 **Parameters**
 
-[]()|[]()
+Parameter|Description
 -|-
 `item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) | The [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) being used in the `Rainbow`
+`playbackState:`  [`PlaybackState`](https://create.roblox.com/docs/reference/engine/enums/PlaybackState) | The [`PlaybackState`](https://create.roblox.com/docs/reference/engine/enums/PlaybackState) of the rainbow
 `seconds:` [`number`](https://create.roblox.com/docs/scripting/luau/numbers) | The amount of seconds being used in the pause
 
 **Code Sample**
 
-This sample would print `"Frame has paused for 5 seconds"`
+This sample would print `"x has paused for y seconds"`
 
 ```lua
 local SocialRainbow = require(game.ReplicatedStorage.SocialRainbow)
@@ -309,13 +322,14 @@ end)
 This event will fire when the `Rainbow` finishes
 
 **Parameters**
-[]()|[]()
+Parameter | Description
 -|-
-`item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) | The [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) being used in the `Rainbow`
+`item:` [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) | The [`GuiObject`](https://create.roblox.com/docs/reference/engine/classes/GuiObject) being used in the Rainbow
+`playbackState:`  [`PlaybackState`](https://create.roblox.com/docs/reference/engine/enums/PlaybackState) | The [`PlaybackState`](https://create.roblox.com/docs/reference/engine/enums/PlaybackState) of the rainbow
 
 **Code Sample**
 
-This Code Example would print out `"Frame has finished!"`
+This Code Example would print out `"x has finished!"`
 
 ```lua
 local SocialRainbow = require(game.ReplicatedStorage.SocialRainbow)
@@ -328,4 +342,3 @@ end)
 ```
 
 > IMPORTANT: All of this is documented by @VSCPlays for @max96git's <SocialRainbow as he created the module for the resource
-
