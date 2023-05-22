@@ -10,6 +10,11 @@
 - @VSCPlays - Module & Documentation
 - @max96git - Idea
 
+# Future Plans
+- rbxts compatibility
+- Rainbows for Parts
+- and last but not least, the better code!
+
 # Documentation
 # Summary
 
