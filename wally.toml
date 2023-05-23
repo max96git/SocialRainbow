@@ -1,0 +1,15 @@
+[package]
+name = "max96git/SocialRainbow"
+description = "Create Rainbow Effect on GUI Items!"
+version = "3.0.0"
+authors = [ "VSCPlays", "max96git" ]
+license = "Apache 2.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+exclude = [
+	"*.spec.lua",
+	"src/mocks",
+	"src/newFolder.lua",
+]
+
+[dependencies]
