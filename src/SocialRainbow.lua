@@ -23,11 +23,14 @@ local event1 = Instance.new("BindableEvent")
 local event2 = Instance.new("BindableEvent")
 local event3 = Instance.new("BindableEvent")
 
+--// Types \\--
+type itemType = "Border" | "Text" | "Background"
+
 --// rainbow \\--
 local rainbow = {}
 rainbow.__index = rainbow
 
-function rainbow.new(item:GuiObject, it:"Border" | "Text" | "Background", cooldown:number?)
+function rainbow.new(item:GuiObject, it:itemType, cooldown:number?)
 	local self = setmetatable({}, rainbow)
 
 	self.itemType = it
