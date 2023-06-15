@@ -50,7 +50,7 @@ function rainbow:Play()
 		return 
 	end
 
-	PLAYED_EVENT:Fire(self.item, self.playbackState)
+	playedEvent:Fire(self.item, self.playbackState)
 	self.playbackState = Enum.PlaybackState.Begin
 
 	local function nextFrame(deltaTime: number)
@@ -82,7 +82,7 @@ function rainbow:Pause(seconds: number?)
 
 	seconds = math.clamp(seconds, .1, 10e4)
 
-	PAUSED_EVENT:Fire(self.item, self.playbackState, seconds)
+	pausedEvent:Fire(self.item, self.playbackState, seconds)
 	self.playbackState = Enum.PlaybackState.Paused
 	
 	self._connection:Disconnect()
@@ -97,7 +97,7 @@ function rainbow:Stop()
 		return
 	end
 
-	FINISHED_EVENT:Fire(self.item, self.playbackState)
+	finishedEvent:Fire(self.item, self.playbackState)
 	self.playbackState = Enum.PlaybackState.Paused
 	
 	self._connection:Disconnect()
