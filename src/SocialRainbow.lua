@@ -6,9 +6,14 @@
 	please credit me @VSCPlays for the module and @kernelvox for the idea
 	
 	The Shime Owner suggested some stuff, so I added some adjustments
+	why would lolmansreturn make me use moonwave...
 ]]
 
 --// Types \\--
+
+--[=[
+	@type ItemType "Border" | "Text" | "Background"
+]=]
 type ItemType = "Border" | "Text" | "Background"
 
 --// Services \\--
@@ -23,7 +28,11 @@ local playedEvent = Instance.new("BindableEvent")
 local pausedEvent = Instance.new("BindableEvent")
 local finishedEvent = Instance.new("BindableEvent")
 
---// rainbow \\--
+--[=[
+	@class rainbow
+
+	An rainbow being used to display
+]=]
 local rainbow = {}
 rainbow.__index = rainbow
 
@@ -45,6 +54,9 @@ function rainbow.new(item: GuiObject, itemType: ItemType, rainbowSpeed: number?)
 	return self
 end
 
+--[=[
+    This function plays the rainbow to the selected item
+]=]
 function rainbow:Play()
 	if self._connection then 
 		return 
@@ -69,6 +81,11 @@ function rainbow:Play()
 	end
 end
 
+--[=[
+	This pauses the rainbow for a certain amount of seconds
+
+	@param seconds number? -- This is the seconds it will pause for then play the rainbow
+]=]
 function rainbow:Pause(seconds: number?)
 	if self.playbackState ~= Enum.PlaybackState.Playing then
 		return
@@ -92,6 +109,9 @@ function rainbow:Pause(seconds: number?)
 	self:Play()
 end
 
+--[=[
+    This function stops the rainbow
+]=]
 function rainbow:Stop()
 	if self.playbackState ~= Enum.PlaybackState.Playing then
 		return
