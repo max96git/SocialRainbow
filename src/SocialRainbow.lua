@@ -6,110 +6,122 @@
 	please credit me @VSCPlays for the module and @kernelvox for the idea
 	
 	The Shime Owner suggested some stuff, so I added some adjustments
+	why would lolmansreturn make me use moonwave...
 ]]
+
+--// Types \\--
+
+--[=[
+	@type ItemType "Border" | "Text" | "Background"
+]=]
+type ItemType = "Border" | "Text" | "Background"
 
 --// Services \\--
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 --// Sanity Checks \\--
-
-if not script:IsDescendantOf(ReplicatedStorage) then
-	error(`Please put this in {ReplicatedStorage:GetFullName()}, where both the client and the server can access it`)
-end
+assert(script:IsDescendantOf(ReplicatedStorage), "Place this module in ReplicatedStorage, where both the client and the server can access it.")
 
 --// Bindables \\--
-local event1 = Instance.new("BindableEvent")
-local event2 = Instance.new("BindableEvent")
-local event3 = Instance.new("BindableEvent")
+local playedEvent = Instance.new("BindableEvent")
+local pausedEvent = Instance.new("BindableEvent")
+local finishedEvent = Instance.new("BindableEvent")
 
---// rainbow \\--
+--[=[
+	@class rainbow
+
+	An rainbow being used to display
+]=]
 local rainbow = {}
 rainbow.__index = rainbow
 
-function rainbow.new(item:GuiObject, it:"Border" | "Text" | "Background", cooldown:number?)
+function rainbow.new(item: GuiObject, itemType: ItemType, rainbowSpeed: number?)
 	local self = setmetatable({}, rainbow)
 
-	self.itemType = it
+	self.itemType = itemType
 	self.item = item
 	self.playbackState = Enum.PlaybackState.Completed
-	self.cooldown = cooldown or 0
-	self.func = function()
-		self.playbackState = Enum.PlaybackState.Playing
-		local color = Color3.fromHSV((tick() * 4) % 1, 1, 1)
-		if self.itemType == "Border" then
-			self.item.BorderColor3 = color
-		elseif self.itemType == "Text" then
-			if self.item.ClassName == "TextBox" or "TextButton" or "TextLabel" then
-				self.item.TextColor3 = color
-			end
-		elseif self.itemType == "Background" then
-			self.item.BackgroundColor3 = color
-		end
-		task.wait(self.cooldown)
-	end
-	self.Played = event1.Event
-	self.Paused = event2.Event
-	self.Finished = event3.Event
+	self.rainbowSpeed = rainbowSpeed or 3 --how many seconds until the rainbow loops
+
+	self._connection = nil
+	self._currentProgress = 0
+
+	self.Played = PLAYED_EVENT.Event
+	self.Paused = PAUSED_EVENT.Event
+	self.Finished = FINISHED_EVENT.Event
 
 	return self
 end
 
+--[=[
+    This function plays the rainbow to the selected item
+]=]
 function rainbow:Play()
-	event1:Fire(self.item, self.playbackState)
-	self.playbackState = Enum.PlaybackState.Begin
-	
-	self.func = function()
-		self.playbackState = Enum.PlaybackState.Playing
-		local color = Color3.fromHSV((tick() * 4) % 1, 1, 1)
-		if self.itemType == "Border" then
-			self.item.BorderColor3 = color
-		elseif self.itemType == "Text" then
-			if self.item.ClassName == "TextBox" or "TextButton" or "TextLabel" then
-				self.item.TextColor3 = color
-			end
-		elseif self.itemType == "Background" then
-			self.item.BackgroundColor3 = color
-		end
-		task.wait(self.cooldown)
+	if self._connection then 
+		return 
 	end
-	
-	while true do
-		if self.func == nil then
-			break
-		end
-		
-		self.func()
+
+	playedEvent:Fire(self.item, self.playbackState)
+	self.playbackState = Enum.PlaybackState.Begin
+
+	local function nextFrame(deltaTime: number)
+		self.playbackState = Enum.PlaybackState.Playing
+		self._currentProgress = (self._currentProgress + (deltaTime / self.rainbowSpeed)) % 1
+
+		local color = Color3.fromHSV(self._currentProgress, 1, 1)
+
+		self.item[self.itemType .. "Color3"] = color
+	end
+
+	if RunService:IsServer() then
+		self._connection = RunService.Stepped:Connect(nextFrame)
+	else
+		self._connection = RunService.RenderStepped:Connect(nextFrame)
 	end
 end
 
-function rainbow:Pause(seconds:number)
+--[=[
+	This pauses the rainbow for a certain amount of seconds
+
+	@param seconds number? -- This is the seconds it will pause for then play the rainbow
+]=]
+function rainbow:Pause(seconds: number?)
 	if self.playbackState ~= Enum.PlaybackState.Playing then
 		return
 	end
+
+	seconds = seconds or 1.5 --default value if no value is provided
 
 	if seconds == self.cooldown then
 		seconds += self.cooldown
 	end
 
-	event2:Fire(self.item, self.playbackState, seconds)
+	seconds = math.clamp(seconds, .1, 10e4)
 
-	seconds = math.clamp(seconds, 0.1, 10e4)
-
+	pausedEvent:Fire(self.item, self.playbackState, seconds)
 	self.playbackState = Enum.PlaybackState.Paused
-	self.func = nil
+	
+	self._connection:Disconnect()
+	self._connection = nil
+
 	task.wait(seconds)
 	self:Play()
 end
 
+--[=[
+    This function stops the rainbow
+]=]
 function rainbow:Stop()
 	if self.playbackState ~= Enum.PlaybackState.Playing then
 		return
 	end
 
-	event3:Fire(self.item, self.playbackState)
+	finishedEvent:Fire(self.item, self.playbackState)
 	self.playbackState = Enum.PlaybackState.Paused
-	self.func = nil
+	
+	self._connection:Disconnect()
+	self._connection = nil
 end
 
 return rainbow
