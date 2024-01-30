@@ -1,19 +1,11 @@
 --[[
-	<SocialRainbow by VSCPlays (originally from @kernelvox (max96git))
+	<SocialRainbow by VSCPlays (originally from @max96git)
 	This rainbow module is based on @WinnersTakeAll (RyanLua)'s Shime
-	I made this for @kernelvox as @bluebxrrybot and @commitblue said it's not enough for a community resource,
-	I want to help @kernelvox succed
 	please credit me @VSCPlays for the module and @kernelvox for the idea
-	
-	The Shime Owner suggested some stuff, so I added some adjustments
-	why would lolmansreturn make me use moonwave...
 ]]
 
 --// Types \\--
 
---[=[
-	@type ItemType "Border" | "Text" | "Background"
-]=]
 type ItemType = "Border" | "Text" | "Background"
 
 --// Services \\--
@@ -28,11 +20,6 @@ local playedEvent = Instance.new("BindableEvent")
 local pausedEvent = Instance.new("BindableEvent")
 local finishedEvent = Instance.new("BindableEvent")
 
---[=[
-	@class rainbow
-
-	An rainbow being used to display
-]=]
 local rainbow = {}
 rainbow.__index = rainbow
 
@@ -47,16 +34,13 @@ function rainbow.new(item: GuiObject, itemType: ItemType, rainbowSpeed: number?)
 	self._connection = nil
 	self._currentProgress = 0
 
-	self.Played = PLAYED_EVENT.Event
-	self.Paused = PAUSED_EVENT.Event
-	self.Finished = FINISHED_EVENT.Event
+	self.Played = playedEvent.Event
+	self.Paused = pausedEvent.Event
+	self.Finished = finishedEvent.Event
 
 	return self
 end
 
---[=[
-    This function plays the rainbow to the selected item
-]=]
 function rainbow:Play()
 	if self._connection then 
 		return 
@@ -67,59 +51,36 @@ function rainbow:Play()
 
 	local function nextFrame(deltaTime: number)
 		self.playbackState = Enum.PlaybackState.Playing
-		self._currentProgress = (self._currentProgress + (deltaTime / self.rainbowSpeed)) % 1
+		self._currentProgress = (self._currentProgress + (.1 / self.rainbowSpeed)) % 1 -- changed to prevent seizure ;)
 
 		local color = Color3.fromHSV(self._currentProgress, 1, 1)
 
 		self.item[self.itemType .. "Color3"] = color
 	end
-
-	if RunService:IsServer() then
-		self._connection = RunService.Stepped:Connect(nextFrame)
-	else
-		self._connection = RunService.RenderStepped:Connect(nextFrame)
-	end
+	
+	self._connection = RunService:IsServer() and RunService.Stepped:Connect(nextFrame) or RunService.RenderStepped:Connect(nextFrame)
 end
 
---[=[
-	This pauses the rainbow for a certain amount of seconds
-
-	@param seconds number? -- This is the seconds it will pause for then play the rainbow
-]=]
-function rainbow:Pause(seconds: number?)
+function rainbow:Pause()
 	if self.playbackState ~= Enum.PlaybackState.Playing then
 		return
 	end
 
-	seconds = seconds or 1.5 --default value if no value is provided
-
-	if seconds == self.cooldown then
-		seconds += self.cooldown
-	end
-
-	seconds = math.clamp(seconds, .1, 10e4)
-
-	pausedEvent:Fire(self.item, self.playbackState, seconds)
+	pausedEvent:Fire(self.item, self.playbackState)
 	self.playbackState = Enum.PlaybackState.Paused
-	
+
 	self._connection:Disconnect()
 	self._connection = nil
-
-	task.wait(seconds)
-	self:Play()
 end
 
---[=[
-    This function stops the rainbow
-]=]
 function rainbow:Stop()
 	if self.playbackState ~= Enum.PlaybackState.Playing then
 		return
 	end
 
 	finishedEvent:Fire(self.item, self.playbackState)
-	self.playbackState = Enum.PlaybackState.Paused
-	
+	self.playbackState = Enum.PlaybackState.Cancelled
+
 	self._connection:Disconnect()
 	self._connection = nil
 end
