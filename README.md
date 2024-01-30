@@ -11,7 +11,6 @@
 - @max96git - Idea
 
 # Future Plans
-- Rainbows for Parts
 - Improved Code
 - Improved documentation
 
