@@ -2,18 +2,18 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/max96git/SocialRainbow?logo=roblox)](https://github.com/VSCPlays/SocialRainbow/releases)
 [![GitHub top language](https://img.shields.io/github/languages/top/max96git/SocialRainbow?logo=lua)](https://github.com/search?q=repo%3AVSCPlays%2FSocialRainbow++language%3ALua&type=code)
-[![GitHub license](https://img.shields.io/github/license/VSCPlays/SocialRainbow?logo=apache)](LICENSE.txt)
+[![GitHub license](https://img.shields.io/github/license/max96git/SocialRainbow?logo=apache)](LICENSE.txt)
 
-**SocialRainbow** is a module made by @VSCPlays for creating rainbows on GUIs
+**SocialRainbow** is a module made by @VSCPlays for creating rainbows on GUIs 
 # Credits
 - @RyanLua - Suggestions
 - @VSCPlays - Module & Documentation
 - @max96git - Idea
 
 # Future Plans
-- rbxts compatibility
 - Rainbows for Parts
-- and last but not least, the better code!
+- Improved Code
+- Improved documentation
 
 # Documentation
 # Summary
