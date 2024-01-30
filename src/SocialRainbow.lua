@@ -10,10 +10,6 @@ type ItemType = "Border" | "Text" | "Background"
 
 --// Services \\--
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
---// Sanity Checks \\--
-assert(script:IsDescendantOf(ReplicatedStorage), "Place this module in ReplicatedStorage, where both the client and the server can access it.")
 
 --// Bindables \\--
 local playedEvent = Instance.new("BindableEvent")
